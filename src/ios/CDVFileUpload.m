@@ -14,17 +14,19 @@
     NSDictionary *postParams = [command.arguments objectAtIndex:2];
     
     NSMutableArray *filesData = [[NSMutableArray alloc] init];
-    for (NSString *source in uploadFiles) {
-        NSString* filePath = [source hasPrefix:@"/"] ? [source copy] : [(NSURL *)[NSURL URLWithString:source] path];
-        if (filePath == nil) {
-            NSLog(@"无法读取文件");
-        } else {
-            NSData* data = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&err];
-            if (!err) {
-                [filesData addObject:data];
-                NSLog(@"读取文件完成");
+    if (![uploadFiles isEqual:[NSNull null]] && uploadFiles.count > 0) {
+        for (NSString *source in uploadFiles) {
+            NSString* filePath = [source hasPrefix:@"/"] ? [source copy] : [(NSURL *)[NSURL URLWithString:source] path];
+            if (filePath == nil) {
+                NSLog(@"无法读取文件");
             } else {
-                NSLog(@"读取文件失败");
+                NSData* data = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&err];
+                if (!err) {
+                    [filesData addObject:data];
+                    NSLog(@"读取文件完成");
+                } else {
+                    NSLog(@"读取文件失败");
+                }
             }
         }
     }
